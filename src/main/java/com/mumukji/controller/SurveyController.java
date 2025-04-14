@@ -1,0 +1,58 @@
+package com.mumukji.controller;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class SurveyController {
+	private final List<Map<String, String>> surveyItems = List.of(
+		    Map.of("name", "피자", "imageUrl", "/images/pizza.png"),
+		    Map.of("name", "초밥", "imageUrl", "/images/sushi.png"),
+		    Map.of("name", "샐러드", "imageUrl", "/images/salad.png"),
+		    Map.of("name", "치킨", "imageUrl", "/images/chicken.png"),
+		    Map.of("name", "된장찌개", "imageUrl", "/images/soybean_soup.png"),
+		    Map.of("name", "떡볶이", "imageUrl", "/images/tteokbokki.png"),
+		    Map.of("name", "크림파스타", "imageUrl", "/images/cream_pasta.png")
+		);
+
+	
+	
+	@GetMapping("/survey/{page}")
+	public String surveyPage(@PathVariable("page") int page, Model model){
+		if (page < 0) return "redirect:/survey/0";
+		if(page >= surveyItems.size()) return "redirect:/makePref";
+
+        Map<String, String> food = surveyItems.get(page);
+
+        model.addAttribute("food", food);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("isLastPage", page == surveyItems.size() - 1);
+
+        return "survey";
+	}
+	@PostMapping("/survey/{page}")
+	public String answerCtrl(@PathVariable("page") int page, @RequestParam("food") String food, @RequestParam("score") int score,
+							HttpSession session) 
+	{
+		Map<String,Integer> responses = (Map<String, Integer>) session.getAttribute("respoonses");
+		if(responses == null) {
+			responses = new LinkedHashMap<>();
+		}
+	
+		responses.put(food, score);
+		session.setAttribute("responses", responses);
+		return "redirect:/survey/" + (page+1);
+	}
+	
+	
+}
