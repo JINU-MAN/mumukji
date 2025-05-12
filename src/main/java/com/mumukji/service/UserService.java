@@ -21,9 +21,6 @@ public class UserService {
         this.userPreferenceMapper = userPreferenceMapper;
     }
 
-    /**
-     * 세션의 응답 데이터를 바탕으로 유저 선호 속성 업데이트
-     */
     public void updateUserPreference(String userId, Map<String, Integer> responses) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId));

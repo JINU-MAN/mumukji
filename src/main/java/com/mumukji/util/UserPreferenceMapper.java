@@ -19,6 +19,8 @@ public class UserPreferenceMapper {
      * 사용자 선호 응답(Map<음식 이름, 점수>)을 기반으로 User 엔터티의 속성값을 설정
      */
     public void applyPreferenceToUser(User user, Map<String, Integer> responses) {
+    	System.out.println("[DEBUG] responses: " + responses);
+    	
         Map<Ingredient, Integer> ingredientScore = new EnumMap<>(Ingredient.class);
         Map<CookingMethod, Integer> methodScore = new EnumMap<>(CookingMethod.class);
         Map<FoodKeyword, Integer> keywordScore = new EnumMap<>(FoodKeyword.class);

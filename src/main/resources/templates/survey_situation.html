@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 선택</title>
+    <style>
+        .category-button {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            margin: 10px auto;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .category-button:hover {
+            background-color: #e0e0e0;
+        }
+        .emoji {
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">식사 상황을 선택해주세요</h2>
+
+    <form method="post" action="/survey_situation">
+        <button type="submit" name="category" value="EATING_ALONE" class="category-button">
+            <span class="emoji">🙋‍♂️</span> 혼자 먹을 거예요
+        </button>
+        <button type="submit" name="category" value="EATING_TOGETHER" class="category-button">
+            <span class="emoji">👨‍👩‍👧‍👦</span> 함께 먹을 거예요
+        </button>
+        <button type="submit" name="category" value="DELIVERY" class="category-button">
+            <span class="emoji">📦</span> 배달로 시켜 먹을래요
+        </button>
+        <button type="submit" name="category" value="COOK" class="category-button">
+            <span class="emoji">🍳</span> 직접 요리할 거예요
+        </button>
+        <button type="submit" name="category" value="LIGHT_MEAL" class="category-button">
+            <span class="emoji">🥗</span> 가볍게 먹고 싶어요
+        </button>
+        <button type="submit" name="category" value="HEAVY_MEAL" class="category-button">
+            <span class="emoji">🍛</span> 든든하게 먹고 싶어요
+        </button>
+    </form>
+</body>
+</html>
+

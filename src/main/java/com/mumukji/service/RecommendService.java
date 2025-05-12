@@ -24,14 +24,15 @@ public class RecommendService {
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;
     }
-
-    public List<String> recommendByPreference(String userId) {
+    
+    public List<String> recommendByPreference(String userId,String category) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId));
 
         double[] userVector = toVector(user);
-
-        return foodRepository.findAll().stream()
+        FoodCategory c;
+        c = FoodCategory.valueOf(category);
+        return foodRepository.findByCategory(c).stream()
                 .map(food -> Map.entry(food, cosineSimilarity(userVector, toVector(food))))
                 .sorted(Map.Entry.<Food, Double>comparingByValue().reversed())
                 .map(entry -> entry.getKey().getName())

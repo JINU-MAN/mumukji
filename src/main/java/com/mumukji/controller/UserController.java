@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mumukji.entity.User;
@@ -57,6 +58,11 @@ public class UserController {
 	    }
 
 	    newSession.setAttribute("userId", userId); // 새 세션에 저장
-	    return "redirect:/survey/0";
+	    return "redirect:/survey_situation";
+	}
+	@RequestMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/login";
 	}
 }

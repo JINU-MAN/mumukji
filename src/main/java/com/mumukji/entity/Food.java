@@ -25,5 +25,14 @@ public class Food {
 	 @ElementCollection(fetch = FetchType.EAGER)
 	 @Enumerated(EnumType.STRING)
 	 private Set<FoodKeyword> keywords;
+	 
+	 @ElementCollection(fetch = FetchType.EAGER) 
+	 @CollectionTable(
+		name="food_category",
+		joinColumns = @JoinColumn(name = "food_id")
+	 )
+	 @Column(name="category")
+	 @Enumerated(EnumType.STRING)
+	 private Set<FoodCategory> category;
 	
 }

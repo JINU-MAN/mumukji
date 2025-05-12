@@ -34,8 +34,7 @@ public class RecommendController {
 	@GetMapping("/recommend")
 	public String showRecommended(HttpSession session, Model model) {
 		String userId = (String) session.getAttribute("userId");
-	    List<String> recommendedNames = recommendService.recommendByPreference(userId);
-
+	    List<String> recommendedNames = recommendService.recommendByPreference(userId,(String) session.getAttribute("category"));
 	    model.addAttribute("recommendedNames", recommendedNames);
 		return "recommend";
 	}

@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 public class SurveyController {
@@ -44,7 +48,7 @@ public class SurveyController {
 	public String answerCtrl(@PathVariable("page") int page, @RequestParam("food") String food, @RequestParam("score") int score,
 							HttpSession session) 
 	{
-		Map<String,Integer> responses = (Map<String, Integer>) session.getAttribute("respoonses");
+		Map<String,Integer> responses = (Map<String, Integer>) session.getAttribute("responses");
 		if(responses == null) {
 			responses = new LinkedHashMap<>();
 		}
@@ -54,5 +58,16 @@ public class SurveyController {
 		return "redirect:/survey/" + (page+1);
 	}
 	
+	@RequestMapping(value="/survey_situation", method=RequestMethod.GET)
+	public String toSelectSituationPage(HttpSession session) {
+		return "survey_situation";
+	}
+	@RequestMapping(value="/survey_situation",method=RequestMethod.POST)
+	public String selectSituation(HttpSession session, @RequestParam("category") String category) {
+		//TODO: process POST request
+		session.setAttribute("category", category);
+		return "redirect:/survey/0";
+	}
 	
 }
+
