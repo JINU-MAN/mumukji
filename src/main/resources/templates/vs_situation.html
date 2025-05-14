@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>고민 음식 선택</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        select {
+            padding: 10px;
+            margin: 12px 0;
+            font-size: 1rem;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button.secondary {
+            background-color: #2196F3;
+        }
+
+        .button.secondary:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>어떤 음식 중에 고민되시나요? 🆚</h2>
+
+<form method="post" th:action="@{/vs_situation}">
+    <div id="dropdown-container">
+        <div class="select-group">
+            <select name="foods" required>
+                <option value="">음식 선택</option>
+                <option th:each="food : ${foodList}"
+                        th:value="${food.name}"
+                        th:text="${food.name}">
+                </option>
+            </select>
+        </div>
+        <div class="select-group">
+            <select name="foods" required>
+                <option value="">음식 선택</option>
+                <option th:each="food : ${foodList}"
+                        th:value="${food.name}"
+                        th:text="${food.name}">
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button type="button" class="button secondary" onclick="addSelect()">항목 추가</button>
+        <button type="submit" class="button">선택 완료</button>
+    </div>
+</form>
+
+<script>
+    function addSelect() {
+        const container = document.getElementById('dropdown-container');
+        const selectGroup = document.createElement('div');
+        selectGroup.className = 'select-group';
+
+        const select = document.createElement('select');
+        select.name = 'foods';
+        select.required = true;
+        select.innerHTML = document.querySelector('select').innerHTML;
+
+        selectGroup.appendChild(select);
+        container.appendChild(selectGroup);
+    }
+</script>
+
+</body>
+</html>
+

@@ -4,12 +4,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.mumukji.entity.Food;
+import com.mumukji.repository.FoodRepository;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -19,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class SurveyController {
+	@Autowired
+	FoodRepository foodRepository;
+	
 	private final List<Map<String, String>> surveyItems = List.of(
 		    Map.of("name", "피자", "imageUrl", "/images/pizza.png"),
 		    Map.of("name", "초밥", "imageUrl", "/images/sushi.png"),
@@ -65,7 +73,22 @@ public class SurveyController {
 	@RequestMapping(value="/survey_situation",method=RequestMethod.POST)
 	public String selectSituation(HttpSession session, @RequestParam("category") String category) {
 		//TODO: process POST request
+		if(category.equals("CHOICE_PROBLEM")) {
+			session.setAttribute("category", category);
+			return "redirect:/vs_situation";
+		}
 		session.setAttribute("category", category);
+		return "redirect:/survey/0";
+	}
+	@RequestMapping(value="/vs_situation", method=RequestMethod.GET)
+	public String vsPageShow(Model model) {
+		List<Food> foodList = foodRepository.findAll();
+		model.addAttribute("foodList",foodList);
+		return "vs_situation";
+	}
+	@RequestMapping(value="/vs_situation",method=RequestMethod.POST)
+	public String choiceHandler(HttpSession session,@RequestParam("foods") List<String> selectedFood) {
+		session.setAttribute("selectedFood", selectedFood);
 		return "redirect:/survey/0";
 	}
 	

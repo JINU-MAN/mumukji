@@ -25,18 +25,27 @@ public class RecommendService {
         this.foodRepository = foodRepository;
     }
     
-    public List<String> recommendByPreference(String userId,String category) {
+    public List<String> recommendByPreference(String userId,String category,List<String> selectedFood) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userId));
 
         double[] userVector = toVector(user);
-        FoodCategory c;
-        c = FoodCategory.valueOf(category);
-        return foodRepository.findByCategory(c).stream()
-                .map(food -> Map.entry(food, cosineSimilarity(userVector, toVector(food))))
-                .sorted(Map.Entry.<Food, Double>comparingByValue().reversed())
-                .map(entry -> entry.getKey().getName())
-                .collect(Collectors.toList());
+        
+        if(category.equals("CHOICE_PROBLEM")) {
+        	return foodRepository.findByNameIn(selectedFood).stream()
+        			.map(food -> Map.entry(food, cosineSimilarity(userVector, toVector(food))))
+                    .sorted(Map.Entry.<Food, Double>comparingByValue().reversed())
+                    .map(entry -> entry.getKey().getName())
+                    .collect(Collectors.toList());
+        }else {
+        	FoodCategory c;
+            c = FoodCategory.valueOf(category);
+            return foodRepository.findByCategory(c).stream()
+                    .map(food -> Map.entry(food, cosineSimilarity(userVector, toVector(food))))
+                    .sorted(Map.Entry.<Food, Double>comparingByValue().reversed())
+                    .map(entry -> entry.getKey().getName())
+                    .collect(Collectors.toList());
+        }
     }
 
     private double[] toVector(User user) {
