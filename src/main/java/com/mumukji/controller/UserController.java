@@ -3,6 +3,7 @@ package com.mumukji.controller;
 import java.util.Set;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.mumukji.entity.User;
 import com.mumukji.repository.UserRepository;
 import com.mumukji.service.UserService;
+import com.mumukji.exception.InvalidFormatException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,11 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class UserController {
-	Set<String> tempId = Set.of(
-		    "00000000", "12345678", "11111111", "22222222",
-		    "33333333", "44444444", "55555555", "66666666",
-		    "77777777", "88888888", "99999999"
-		);
+	
 	private final UserService userService;
 	private final UserRepository userRepository;
 	
@@ -40,25 +38,24 @@ public class UserController {
 	}
 	@PostMapping("/login")
 	public String login(@RequestParam("userId") String userId,
-	                    HttpServletRequest request) {
+	                    HttpServletRequest request,Model model) {
 	    HttpSession oldSession = request.getSession(false);
 	    if (oldSession != null) {
 	        oldSession.invalidate(); // 기존 세션 무효화
 	    }
 
 	    HttpSession newSession = request.getSession(true); // 새 세션 생성
-	    if (tempId.contains(userId)) {
-	        userId = "00000000";
+	    try {
+	    	userService.loginorregisterUser(userId);
+	    	newSession.setAttribute("userId", userId); // 새 세션에 저장
+	    	if(userId == "00000000") {
+	    		return "redirect:/survey_situation";
+	    	}
+	 	    return "redirect:/survey_situation";
+	    }catch(InvalidFormatException e){
+	    	model.addAttribute("errorMessage", e.getMessage());
+	    	return "login_form";
 	    }
-
-	    if (!userRepository.existsByUserId(userId)) {
-	        User newUser = new User();
-	        newUser.setUserId(userId);
-	        userRepository.save(newUser);
-	    }
-
-	    newSession.setAttribute("userId", userId); // 새 세션에 저장
-	    return "redirect:/survey_situation";
 	}
 	@RequestMapping("/logout")
 	public String logout(HttpSession session) {

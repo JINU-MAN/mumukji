@@ -35,8 +35,13 @@ public class RecommendController {
 	public String showRecommended(HttpSession session, Model model) {
 		String userId = (String) session.getAttribute("userId");
 		List<String> selectedFood = (List<String>) session.getAttribute("selectedFood");
-	    List<String> recommendedNames = recommendService.recommendByPreference(userId,(String) session.getAttribute("category"),selectedFood);
-	    model.addAttribute("recommendedNames", recommendedNames);
+		List<String> recommendedNames;
+		if(session.getAttribute("category").equals("CHOICE_PROBLEM")) {
+			recommendedNames = recommendService.recommendByPreference(userId,(String) session.getAttribute("category"),selectedFood);
+		}else{
+			recommendedNames = recommendService.recommendByPreference(userId,(String) session.getAttribute("category"));
+		}
+		model.addAttribute("recommendedNames", recommendedNames);
 		return "recommend";
 	}
 

@@ -1,6 +1,7 @@
 package com.mumukji.controller;
 
 import java.util.LinkedHashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mumukji.entity.Food;
+import com.mumukji.entity.User;
 import com.mumukji.repository.FoodRepository;
+import com.mumukji.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,8 +27,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class SurveyController {
-	@Autowired
+	
 	FoodRepository foodRepository;
+	UserRepository userRepository;
+	
+	public SurveyController(FoodRepository foodRepository, UserRepository userRepository){
+		this.foodRepository = foodRepository;
+		this.userRepository = userRepository;
+	}
 	
 	private final List<Map<String, String>> surveyItems = List.of(
 		    Map.of("name", "피자", "imageUrl", "/images/pizza.png"),
@@ -66,6 +75,27 @@ public class SurveyController {
 		return "redirect:/survey/" + (page+1);
 	}
 	
+	
+	
+	@RequestMapping(value="/select_history", method=RequestMethod.GET)
+	public String toSelectHistory(HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		User user = userRepository.findByUserId(userId)
+				.orElseThrow(()->new IllegalArgumentException("사용자를 찾을 수 없습니다" + userId));
+		     
+		if(user.getIngredient()==null) {
+			return "redirect:/survey/0";
+		}
+		return "select_history";
+	}
+	@RequestMapping(value="/select_history", method=RequestMethod.POST)
+	public String historyDecision(HttpSession session, @RequestParam("action") String action) {
+		if(action.equals("retry")) {
+			return "redirect:/survey/0";
+		}
+		return "redirect:/recommend";
+	}
+	
 	@RequestMapping(value="/survey_situation", method=RequestMethod.GET)
 	public String toSelectSituationPage(HttpSession session) {
 		return "survey_situation";
@@ -78,7 +108,7 @@ public class SurveyController {
 			return "redirect:/vs_situation";
 		}
 		session.setAttribute("category", category);
-		return "redirect:/survey/0";
+		return "redirect:/select_history";
 	}
 	@RequestMapping(value="/vs_situation", method=RequestMethod.GET)
 	public String vsPageShow(Model model) {
@@ -89,7 +119,7 @@ public class SurveyController {
 	@RequestMapping(value="/vs_situation",method=RequestMethod.POST)
 	public String choiceHandler(HttpSession session,@RequestParam("foods") List<String> selectedFood) {
 		session.setAttribute("selectedFood", selectedFood);
-		return "redirect:/survey/0";
+		return "redirect:/select_history";
 	}
 	
 }

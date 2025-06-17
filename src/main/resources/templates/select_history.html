@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이전 설문 결과 있음</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.25s ease;
+        }
+
+        .choice-button.result {
+            background-color: #4CAF50;
+        }
+
+        .choice-button.result:hover {
+            background-color: #43a047;
+        }
+
+        .choice-button.retry {
+            background-color: #2196F3;
+        }
+
+        .choice-button.retry:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>이전 설문조사 결과가 있습니다.<br>어떻게 하시겠어요?</h2>
+    <form method="post" action="/select_history">
+        <button type="submit" name="action" value="result" class="choice-button result">이전 결과로 진행</button>
+        <button type="submit" name="action" value="retry" class="choice-button retry">설문 다시 하기</button>
+    </form>
+</div>
+
+</body>
+</html>
